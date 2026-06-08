@@ -1,0 +1,208 @@
+<Window x:Class="AL71.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:tb="clr-namespace:H.NotifyIcon;assembly=H.NotifyIcon.Wpf"
+        xmlns:conv="clr-namespace:AL71.UI.Converters"
+        Title="AL71 Italian Layout Manager" Height="640" Width="980"
+        WindowStartupLocation="CenterScreen"
+        Closing="Window_Closing">
+
+    <Window.Resources>
+        <conv:KeyWidthConverter x:Key="KeyWidth" />
+    </Window.Resources>
+
+    <Grid>
+        <!-- Tray icon (persiste anche a finestra nascosta) -->
+        <tb:TaskbarIcon x:Name="Tray"
+                        ToolTipText="AL71 Italian Layout Manager"
+                        TrayMouseDoubleClick="OnTrayOpen">
+            <tb:TaskbarIcon.GeneratedIcon>
+                <tb:GeneratedIconSource Text="IT" Foreground="White" Background="#2D7DD2" />
+            </tb:TaskbarIcon.GeneratedIcon>
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Apri" Click="OnTrayOpen" />
+                    <MenuItem Header="Abilita / Disabilita remap" Click="OnTrayToggle" />
+                    <Separator />
+                    <MenuItem Header="Esci" Click="OnTrayExit" />
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
+
+        <TabControl Margin="8">
+
+            <!-- ================= DASHBOARD ================= -->
+            <TabItem Header="Dashboard">
+                <StackPanel Margin="16" DataContext="{Binding Dashboard}">
+                    <TextBlock Text="AL71 Italian Layout Manager" Style="{StaticResource H1}" />
+                    <Border Background="{StaticResource PanelBrush}" CornerRadius="8" Padding="16">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Layout:" Style="{StaticResource Label}" />
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding ActiveProfile}" Margin="0,6,0,2" />
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Tastiera:" Style="{StaticResource Label}" />
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding DeviceStatus}" Margin="0,6,0,2" />
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Stato:" Style="{StaticResource Label}" />
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding RemapStatus}" Margin="0,6,0,2" />
+                        </Grid>
+                    </Border>
+
+                    <TextBlock Text="Profilo attivo" Style="{StaticResource Label}" Margin="0,16,0,2" />
+                    <ComboBox Width="260" HorizontalAlignment="Left"
+                              ItemsSource="{Binding DataContext.Profiles, RelativeSource={RelativeSource AncestorType=Window}}"
+                              SelectedItem="{Binding DataContext.SelectedProfile, RelativeSource={RelativeSource AncestorType=Window}}" />
+                </StackPanel>
+            </TabItem>
+
+            <!-- ================= TASTIERA ================= -->
+            <TabItem Header="Tastiera">
+                <Grid Margin="12">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Tastiera visuale -->
+                    <Border Grid.Row="0" Background="{StaticResource PanelBrush}" CornerRadius="8" Padding="12">
+                        <ItemsControl ItemsSource="{Binding Editor.Rows}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <ItemsControl ItemsSource="{Binding Keys}" Margin="0,2">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Horizontal" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Button Content="{Binding Label}"
+                                                        Width="{Binding Width, Converter={StaticResource KeyWidth}}"
+                                                        Height="40" Margin="2"
+                                                        Command="{Binding DataContext.Editor.SelectKeyCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                        CommandParameter="{Binding}" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border>
+
+                    <!-- Editor del tasto selezionato -->
+                    <Border Grid.Row="1" Margin="0,12,0,0" BorderBrush="#DDD" BorderThickness="1"
+                            CornerRadius="8" Padding="16" DataContext="{Binding Editor}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource H1}">
+                                <Run Text="Editor tasto: " />
+                                <Run Text="{Binding SelectedPhysicalKey, Mode=OneWay}" FontWeight="Bold" />
+                            </TextBlock>
+                            <Grid IsEnabled="{Binding HasSelection}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="160" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="160" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Normale" Style="{StaticResource Label}" />
+                                <TextBox  Grid.Row="0" Grid.Column="1" Margin="0,4"
+                                          Text="{Binding Normal, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Grid.Row="0" Grid.Column="2" Text="Shift" Style="{StaticResource Label}" />
+                                <TextBox  Grid.Row="0" Grid.Column="3" Margin="0,4"
+                                          Text="{Binding Shift, UpdateSourceTrigger=PropertyChanged}" />
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="AltGr" Style="{StaticResource Label}" />
+                                <TextBox  Grid.Row="1" Grid.Column="1" Margin="0,4"
+                                          Text="{Binding AltGr, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Grid.Row="1" Grid.Column="2" Text="Shift+AltGr" Style="{StaticResource Label}" />
+                                <TextBox  Grid.Row="1" Grid.Column="3" Margin="0,4"
+                                          Text="{Binding ShiftAltGr, UpdateSourceTrigger=PropertyChanged}" />
+
+                                <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4"
+                                            Orientation="Horizontal" Margin="0,12,0,0">
+                                    <Button Content="Applica" Width="100" Margin="0,0,8,0"
+                                            Command="{Binding ApplyCommand}" />
+                                    <Button Content="Azzera" Width="100" Command="{Binding ClearCommand}" />
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- ================= DIAGNOSTICA ================= -->
+            <TabItem Header="Diagnostica">
+                <Grid Margin="16" DataContext="{Binding Diagnostics}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Cattura tasti -->
+                    <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                        <TextBlock Text="Cattura tasti" Style="{StaticResource H1}" />
+                        <Border x:Name="KeyCaptureArea" Focusable="True"
+                                Background="{StaticResource PanelBrush}" CornerRadius="8"
+                                Padding="16" MinHeight="120"
+                                PreviewKeyDown="OnCaptureKey" MouseDown="OnCaptureFocus">
+                            <TextBlock Text="{Binding LastKey}" FontFamily="Consolas" FontSize="14" />
+                        </Border>
+                        <TextBlock Margin="0,8,0,0" TextWrapping="Wrap" Foreground="#666"
+                                   Text="Clicca nel riquadro e premi i tasti dell'AL71 per leggere PhysicalKey / ScanCode / VirtualKey." />
+                    </StackPanel>
+
+                    <!-- Dispositivi HID -->
+                    <StackPanel Grid.Column="1" Margin="12,0,0,0">
+                        <TextBlock Text="Dispositivi HID" Style="{StaticResource H1}" />
+                        <ListView ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}"
+                                  Height="260">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Nome" Width="200" DisplayMemberBinding="{Binding DeviceName}" />
+                                    <GridViewColumn Header="VID" Width="70" DisplayMemberBinding="{Binding VendorId}" />
+                                    <GridViewColumn Header="PID" Width="70" DisplayMemberBinding="{Binding ProductId}" />
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                            <Button Content="Aggiorna" Width="100" Margin="0,0,8,0"
+                                    Command="{Binding RefreshDevicesCommand}" />
+                            <Button Content="Imposta come AL71" Width="150"
+                                    Command="{Binding SetAsTargetCommand}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <!-- ================= IMPOSTAZIONI ================= -->
+            <TabItem Header="Impostazioni">
+                <StackPanel Margin="16" DataContext="{Binding Settings}">
+                    <TextBlock Text="Impostazioni" Style="{StaticResource H1}" />
+                    <CheckBox Content="Avvia con Windows" Margin="0,6"
+                              IsChecked="{Binding RunAtStartup}" />
+                    <CheckBox Content="Remap abilitato" Margin="0,6"
+                              IsChecked="{Binding RemapEnabled}" />
+                    <CheckBox Content="Attiva solo quando l'AL71 è connessa" Margin="0,6"
+                              IsChecked="{Binding OnlyWhenDeviceConnected}" />
+                    <CheckBox Content="Riduci nella tray alla chiusura" Margin="0,6"
+                              IsChecked="{Binding MinimizeToTray}" />
+                    <TextBlock Margin="0,16,0,0" Text="{Binding DeviceInfoText}" Foreground="#666" />
+                </StackPanel>
+            </TabItem>
+
+        </TabControl>
+    </Grid>
+</Window>

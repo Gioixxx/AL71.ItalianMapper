@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>AL71.Layouts</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\italian.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AL71.Core\AL71.Core.csproj" />
+  </ItemGroup>
+
+</Project>

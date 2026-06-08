@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RootNamespace>AL71.UI</RootNamespace>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>AL71.LayoutManager</AssemblyName>
+    <ApplicationIcon></ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+    <PackageReference Include="H.NotifyIcon.Wpf" Version="2.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AL71.Core\AL71.Core.csproj" />
+    <ProjectReference Include="..\AL71.Hook\AL71.Hook.csproj" />
+    <ProjectReference Include="..\AL71.Device\AL71.Device.csproj" />
+    <ProjectReference Include="..\AL71.Layouts\AL71.Layouts.csproj" />
+    <ProjectReference Include="..\AL71.Persistence\AL71.Persistence.csproj" />
+  </ItemGroup>
+
+</Project>

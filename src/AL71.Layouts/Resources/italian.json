@@ -1,0 +1,32 @@
+{
+  "name": "Italiano",
+  "description": "Layout italiano software di base per YUNZII AL71 (ANSI). Da completare con la mappa reale dei 71 tasti tramite lo strumento diagnostico.",
+  "schemaVersion": 1,
+  "mappings": [
+    { "physicalKey": "OEM_1", "normal": "ò", "shift": "ç", "altGr": "@", "shiftAltGr": "#" },
+    { "physicalKey": "OEM_7", "normal": "à", "shift": "°" },
+    { "physicalKey": "OEM_4", "normal": "è", "shift": "é", "altGr": "[", "shiftAltGr": "{" },
+    { "physicalKey": "OEM_6", "normal": "+", "shift": "*", "altGr": "]", "shiftAltGr": "}" },
+    { "physicalKey": "OEM_5", "normal": "ù", "shift": "§" },
+    { "physicalKey": "OEM_MINUS", "normal": "'", "shift": "?" },
+    { "physicalKey": "OEM_PLUS", "normal": "ì", "shift": "^" },
+    { "physicalKey": "OEM_COMMA", "normal": ",", "shift": ";" },
+    { "physicalKey": "OEM_PERIOD", "normal": ".", "shift": ":" },
+    { "physicalKey": "OEM_2", "normal": "-", "shift": "_" },
+
+    { "physicalKey": "2", "shift": "\"" },
+    { "physicalKey": "3", "shift": "£" },
+    { "physicalKey": "6", "shift": "&" },
+    { "physicalKey": "7", "shift": "/" },
+    { "physicalKey": "8", "shift": "(" },
+    { "physicalKey": "9", "shift": ")" },
+    { "physicalKey": "0", "shift": "=" },
+
+    { "physicalKey": "A", "altGr": "à" },
+    { "physicalKey": "E", "altGr": "è" },
+    { "physicalKey": "I", "altGr": "ì" },
+    { "physicalKey": "O", "altGr": "ò" },
+    { "physicalKey": "U", "altGr": "ù" }
+  ],
+  "macros": []
+}
