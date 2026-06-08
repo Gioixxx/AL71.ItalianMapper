@@ -93,6 +93,15 @@ public sealed class AppController : IDisposable
         Log.Information("Profilo salvato: {Profile}", ActiveProfile.Name);
     }
 
+    /// <summary>Salva un profilo (es. generato dalla mappa tasti) e opzionalmente lo attiva.</summary>
+    public void ImportProfile(KeyboardProfile profile, bool activate)
+    {
+        _profileStore.Save(profile);
+        Log.Information("Profilo importato/generato: {Profile}", profile.Name);
+        if (activate)
+            SwitchProfile(profile.Name);
+    }
+
     public bool RemapEnabled
     {
         get => Settings.RemapEnabled;

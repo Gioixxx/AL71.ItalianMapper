@@ -144,8 +144,12 @@
                 <Border Background="{StaticResource PanelBrush}" CornerRadius="6" Padding="12">
                     <TextBlock Text="{Binding SummaryText}" TextWrapping="Wrap" FontFamily="Consolas" />
                 </Border>
-                <Button Content="Salva" Width="140" HorizontalAlignment="Left" Margin="0,12,0,0"
-                        Command="{Binding SaveCommand}" />
+                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                    <Button Content="Salva" Width="140" Margin="0,0,8,0"
+                            Command="{Binding SaveCommand}" />
+                    <Button Content="Genera profilo italiano" Width="200"
+                            Command="{Binding GenerateProfileCommand}" />
+                </StackPanel>
             </StackPanel>
 
         </Grid>

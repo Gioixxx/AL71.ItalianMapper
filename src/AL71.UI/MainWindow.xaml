@@ -14,7 +14,7 @@
     <Grid>
         <!-- Tray icon (persiste anche a finestra nascosta) -->
         <tb:TaskbarIcon x:Name="Tray"
-                        ToolTipText="AL71 Italian Layout Manager"
+                        ToolTipText="{Binding StatusSummary}"
                         TrayMouseDoubleClick="OnTrayOpen">
             <tb:TaskbarIcon.GeneratedIcon>
                 <tb:GeneratedIconSource Text="IT" Foreground="White" Background="#2D7DD2" />
@@ -59,6 +59,13 @@
                     <ComboBox Width="260" HorizontalAlignment="Left"
                               ItemsSource="{Binding DataContext.Profiles, RelativeSource={RelativeSource AncestorType=Window}}"
                               SelectedItem="{Binding DataContext.SelectedProfile, RelativeSource={RelativeSource AncestorType=Window}}" />
+
+                    <TextBlock Text="Mappatura" Style="{StaticResource Label}" Margin="0,16,0,2" />
+                    <Button Width="260" HorizontalAlignment="Left" Padding="0,8"
+                            Content="Attiva / Disattiva mappatura"
+                            Command="{Binding DataContext.ToggleRemapCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+                    <TextBlock Margin="0,6,0,0" Foreground="#666"
+                               Text="Scorciatoia globale: Ctrl+Alt+M" />
                 </StackPanel>
             </TabItem>
 

@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using AL71.Core.Input;
 using AL71.Core.Models;
+using AL71.Layouts;
 using AL71.Persistence;
 using AL71.UI.Models;
 using AL71.UI.Services;
@@ -269,17 +270,39 @@ public partial class SetupWizardViewModel : ObservableObject
             DeviceName = DetectedDeviceText
         };
         var devicePath = _diagStore.SaveDevice(device);
-
-        var map = new Dictionary<string, KeyScanInfo>(StringComparer.OrdinalIgnoreCase);
-        foreach (var k in _sequence.Where(k => k.IsCaptured))
-            map[k.PhysicalKey] = new KeyScanInfo { ScanCode = k.ScanCode, VkCode = k.VkCode };
-        var mapPath = _diagStore.SaveKeyMap(map);
+        var mapPath = _diagStore.SaveKeyMap(BuildCapturedMap());
 
         _controller.SetTargetDevice(VendorId, ProductId);
 
         Saved = true;
         SummaryText =
             $"Salvato!\n\nVID/PID impostati: 0x{VendorId:X4} / 0x{ProductId:X4}\n" +
-            $"• {devicePath}\n• {mapPath}\n\nPuoi chiudere la procedura guidata.";
+            $"• {devicePath}\n• {mapPath}\n\n" +
+            "Ora puoi generare il profilo italiano dalla mappa, oppure chiudere.";
+    }
+
+    /// <summary>Genera e attiva il profilo "Italiano (AL71)" dalla mappa catturata.</summary>
+    [RelayCommand]
+    private void GenerateProfile()
+    {
+        var profile = ProfileFactory.BuildItalianFromKeymap(BuildCapturedMap(), out var missing);
+        _controller.ImportProfile(profile, activate: true);
+
+        var note = missing.Count == 0
+            ? "Tutti i tasti del layout di base sono coperti."
+            : $"Tasti del layout non ancora catturati ({missing.Count}): {string.Join(", ", missing)}";
+
+        SummaryText =
+            $"Profilo \"{profile.Name}\" generato e attivato " +
+            $"({profile.Mappings.Count} tasti mappati).\n\n{note}\n\n" +
+            "Puoi chiudere la procedura guidata.";
+    }
+
+    private Dictionary<string, KeyScanInfo> BuildCapturedMap()
+    {
+        var map = new Dictionary<string, KeyScanInfo>(StringComparer.OrdinalIgnoreCase);
+        foreach (var k in _sequence.Where(k => k.IsCaptured))
+            map[k.PhysicalKey] = new KeyScanInfo { ScanCode = k.ScanCode, VkCode = k.VkCode };
+        return map;
     }
 }
