@@ -14,6 +14,12 @@ public partial class MainViewModel : ObservableObject
     public DiagnosticsViewModel Diagnostics { get; }
     public SettingsViewModel Settings { get; }
 
+    /// <summary>Esposto per consentire alla view di avviare la procedura guidata.</summary>
+    public AppController Controller => _controller;
+
+    /// <summary>Da chiamare dopo la chiusura della procedura guidata per aggiornare lo stato.</summary>
+    public void OnWizardClosed() => Dashboard.Refresh();
+
     public ObservableCollection<string> Profiles { get; } = new();
 
     [ObservableProperty] private string? _selectedProfile;

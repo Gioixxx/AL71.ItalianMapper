@@ -1,0 +1,162 @@
+<Window x:Class="AL71.UI.SetupWizard"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:conv="clr-namespace:AL71.UI.Converters"
+        Title="Procedura guidata AL71" Height="640" Width="780"
+        WindowStartupLocation="CenterOwner"
+        PreviewKeyDown="Window_PreviewKeyDown">
+
+    <Window.Resources>
+        <conv:KeyWidthConverter x:Key="KeyWidth" />
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+
+        <Style x:Key="CaptureKeyStyle" TargetType="Button">
+            <Setter Property="Background" Value="#ECECEC" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsCaptured}" Value="True">
+                    <Setter Property="Background" Value="#B7E1B0" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsCurrent}" Value="True">
+                    <Setter Property="Background" Value="#FFD27A" />
+                    <Setter Property="BorderBrush" Value="#E08A00" />
+                    <Setter Property="BorderThickness" Value="2" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,12">
+            <TextBlock Text="Configurazione guidata AL71" FontSize="22" FontWeight="SemiBold" />
+            <TextBlock Foreground="#666"
+                       Text="Scopri VID/PID della tastiera e cattura la mappa dei tasti." />
+        </StackPanel>
+
+        <!-- Contenuto -->
+        <Grid Grid.Row="1">
+
+            <!-- ===== Passo 0: Benvenuto ===== -->
+            <StackPanel Visibility="{Binding IsWelcome, Converter={StaticResource BoolToVis}}">
+                <TextBlock Style="{StaticResource H1}" Text="Benvenuto" />
+                <TextBlock TextWrapping="Wrap" Margin="0,4,0,0" Text="Questa procedura ti aiuta a:" />
+                <TextBlock Margin="12,8,0,0" Text="1) Identificare l'AL71 e ricavarne VID e PID." />
+                <TextBlock Margin="12,4,0,0" Text="2) Catturare lo scanCode/Virtual-Key di ogni tasto." />
+                <TextBlock Margin="12,4,0,0" Text="3) Salvare device.json e keymap-al71.json." />
+                <TextBlock TextWrapping="Wrap" Margin="0,16,0,0" Foreground="#666"
+                           Text="Suggerimento: collega l'AL71 via cavo USB con l'interruttore di sistema su WIN. Durante la cattura il remap viene sospeso automaticamente." />
+                <TextBlock TextWrapping="Wrap" Margin="0,8,0,0" Foreground="#666"
+                           Text="Clicca Avanti per iniziare." />
+            </StackPanel>
+
+            <!-- ===== Passo 1: Dispositivo ===== -->
+            <StackPanel Visibility="{Binding IsDevice, Converter={StaticResource BoolToVis}}">
+                <TextBlock Style="{StaticResource H1}" Text="1. Identifica la tastiera (VID/PID)" />
+                <Border Background="{StaticResource PanelBrush}" CornerRadius="6" Padding="12" Margin="0,4">
+                    <TextBlock Text="{Binding DeviceStatus}" TextWrapping="Wrap" />
+                </Border>
+
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <Button Content="1) Fotografa dispositivi" Width="170" Margin="0,0,8,0"
+                            Command="{Binding SnapshotDevicesCommand}" />
+                    <Button Content="2) Rileva (dopo aver scollegato)" Width="220" Margin="0,0,8,0"
+                            Command="{Binding DetectByRemovalCommand}" />
+                    <Button Content="Mostra tutti" Width="110"
+                            Command="{Binding RefreshDevicesCommand}" />
+                </StackPanel>
+
+                <ListView ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}"
+                          Height="200" Margin="0,10,0,0">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Nome" Width="380" DisplayMemberBinding="{Binding DeviceName}" />
+                            <GridViewColumn Header="VID" Width="80" DisplayMemberBinding="{Binding VendorId}" />
+                            <GridViewColumn Header="PID" Width="80" DisplayMemberBinding="{Binding ProductId}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <Button Content="Usa selezionata" Width="140" Margin="0,0,8,0"
+                            Command="{Binding UseSelectedDeviceCommand}" />
+                    <TextBlock VerticalAlignment="Center" FontWeight="SemiBold"
+                               Text="{Binding DetectedDeviceText}" />
+                </StackPanel>
+            </StackPanel>
+
+            <!-- ===== Passo 2: Cattura tasti ===== -->
+            <StackPanel Visibility="{Binding IsKeys, Converter={StaticResource BoolToVis}}">
+                <TextBlock Style="{StaticResource H1}" Text="2. Cattura mappa tasti" />
+                <Border Background="#FFF6E5" BorderBrush="#E08A00" BorderThickness="1"
+                        CornerRadius="6" Padding="12" Margin="0,4">
+                    <StackPanel>
+                        <TextBlock Text="{Binding KeyPrompt}" FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding ProgressText}" Foreground="#666" Margin="0,4,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <Border Background="{StaticResource PanelBrush}" CornerRadius="6" Padding="10" Margin="0,10,0,0">
+                    <ItemsControl ItemsSource="{Binding Rows}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <ItemsControl ItemsSource="{Binding Keys}" Margin="0,2">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button Content="{Binding Label}" Height="38" Margin="2"
+                                                    IsHitTestVisible="False"
+                                                    Width="{Binding Width, Converter={StaticResource KeyWidth}}"
+                                                    Style="{StaticResource CaptureKeyStyle}"
+                                                    ToolTip="{Binding CapturedName}" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+
+                <TextBlock Text="{Binding LastCapture}" FontFamily="Consolas" Margin="0,10,0,0" />
+
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <Button Content="Salta tasto" Width="110" Margin="0,0,8,0"
+                            Command="{Binding SkipKeyCommand}" />
+                    <Button Content="Tasto precedente" Width="140" Margin="0,0,8,0"
+                            Command="{Binding PreviousKeyCommand}" />
+                    <Button Content="Ricomincia" Width="110"
+                            Command="{Binding RestartCaptureCommand}" />
+                </StackPanel>
+            </StackPanel>
+
+            <!-- ===== Passo 3: Riepilogo ===== -->
+            <StackPanel Visibility="{Binding IsSummary, Converter={StaticResource BoolToVis}}">
+                <TextBlock Style="{StaticResource H1}" Text="3. Riepilogo e salvataggio" />
+                <Border Background="{StaticResource PanelBrush}" CornerRadius="6" Padding="12">
+                    <TextBlock Text="{Binding SummaryText}" TextWrapping="Wrap" FontFamily="Consolas" />
+                </Border>
+                <Button Content="Salva" Width="140" HorizontalAlignment="Left" Margin="0,12,0,0"
+                        Command="{Binding SaveCommand}" />
+            </StackPanel>
+
+        </Grid>
+
+        <!-- Footer -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Content="Indietro" Width="100" Margin="0,0,8,0"
+                    Command="{Binding BackCommand}" IsEnabled="{Binding CanGoBack}" />
+            <Button Content="Avanti" Width="100" Margin="0,0,8,0"
+                    Command="{Binding NextCommand}" IsEnabled="{Binding CanGoNext}" />
+            <Button Content="Chiudi" Width="100" Click="OnClose" />
+        </StackPanel>
+    </Grid>
+</Window>

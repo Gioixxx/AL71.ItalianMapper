@@ -48,11 +48,25 @@ dotnet run --project src/AL71.UI
 Il motore di remap è **disaccoppiato dalla UI** e gira su un thread dedicato con
 message loop, come richiesto dagli hook a basso livello.
 
-## Primo avvio: scoperta VID/PID e mappa tasti
+## Primo avvio: procedura guidata (VID/PID + mappa tasti)
 
-L'AL71 ha VID/PID ancora da rilevare. Apri lo **strumento diagnostico** nella UI,
-premi i tasti sulla AL71 e registra `VID/PID` + `scanCode/vkCode`. Usa l'output per
-completare `src/AL71.Layouts/Resources/italian.json` (mappa dei 71 tasti).
+> Poiché l'AL71 **non è compatibile VIA/QMK**, VID/PID e mappa tasti vanno ricavati
+> dall'app stessa.
+
+Al primo avvio (o da **Diagnostica → Avvia procedura guidata AL71**) parte una
+**procedura guidata** in 4 passi:
+
+1. **Benvenuto** — istruzioni (cavo USB, interruttore su WIN).
+2. **Identifica la tastiera** — metodo *scollega/ricollega*: "Fotografa" i dispositivi
+   HID, scollega l'AL71, "Rileva" → l'app capisce quale è sparita e ne ricava VID/PID
+   (in alternativa, selezione manuale dall'elenco).
+3. **Cattura mappa tasti** — premi i tasti evidenziati sulla tastiera visuale; l'app
+   registra `scanCode`/`vkCode` di ciascuno (il remap è sospeso durante la cattura).
+4. **Riepilogo e salvataggio** — scrive `device.json` e `keymap-al71.json` in
+   `%AppData%\AL71LayoutManager\Diagnostics` e imposta l'AL71 come tastiera target.
+
+Usa `keymap-al71.json` per completare/affinare
+`src/AL71.Layouts/Resources/italian.json` (mappa dei 71 tasti).
 
 ## Configurazione
 

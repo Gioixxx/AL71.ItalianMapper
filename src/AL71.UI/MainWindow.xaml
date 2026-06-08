@@ -145,7 +145,17 @@
 
             <!-- ================= DIAGNOSTICA ================= -->
             <TabItem Header="Diagnostica">
-                <Grid Margin="16" DataContext="{Binding Diagnostics}">
+              <DockPanel Margin="16">
+                <Border DockPanel.Dock="Top" Background="#EAF3FB" CornerRadius="6"
+                        Padding="12" Margin="0,0,0,12">
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Content="Avvia procedura guidata AL71"
+                                Width="200" Click="OnOpenWizard" />
+                        <TextBlock VerticalAlignment="Center" TextWrapping="Wrap"
+                                   Text="Non conosci VID/PID o la mappa tasti? La procedura guidata li scopre e li salva per te." />
+                    </DockPanel>
+                </Border>
+                <Grid DataContext="{Binding Diagnostics}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
@@ -185,6 +195,7 @@
                         </StackPanel>
                     </StackPanel>
                 </Grid>
+              </DockPanel>
             </TabItem>
 
             <!-- ================= IMPOSTAZIONI ================= -->

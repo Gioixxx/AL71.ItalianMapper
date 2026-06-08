@@ -40,7 +40,18 @@ public partial class App : Application
         var startMinimized = e.Args.Contains("--minimized");
         window.Show();
         if (startMinimized && _controller.Settings.MinimizeToTray)
+        {
             window.Hide();
+            return;
+        }
+
+        // Primo avvio senza tastiera configurata: apri la procedura guidata.
+        if (_controller.Settings.DeviceVendorId == 0 && _controller.Settings.DeviceProductId == 0)
+        {
+            var wizard = new SetupWizard(_controller) { Owner = window };
+            wizard.ShowDialog();
+            vm.OnWizardClosed();
+        }
     }
 
     protected override void OnExit(ExitEventArgs e)

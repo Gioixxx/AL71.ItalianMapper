@@ -32,6 +32,16 @@ public partial class MainWindow : Window
         Application.Current.Shutdown();
     }
 
+    private void OnOpenWizard(object sender, RoutedEventArgs e)
+    {
+        if (Vm is null)
+            return;
+
+        var wizard = new SetupWizard(Vm.Controller) { Owner = this };
+        wizard.ShowDialog();
+        Vm.OnWizardClosed();
+    }
+
     private void OnCaptureFocus(object sender, MouseButtonEventArgs e) => KeyCaptureArea.Focus();
 
     private void OnCaptureKey(object sender, KeyEventArgs e)

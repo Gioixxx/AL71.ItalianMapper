@@ -106,6 +106,16 @@ public sealed class AppController : IDisposable
 
     public void SaveSettings() => _settingsStore.Save(Settings);
 
+    /// <summary>Sospende temporaneamente il remap (es. durante la cattura tasti) senza toccare le impostazioni.</summary>
+    public void SuspendRemap()
+    {
+        _engine.Enabled = false;
+        RaiseStatusChanged();
+    }
+
+    /// <summary>Ripristina lo stato del remap in base a impostazioni e dispositivo.</summary>
+    public void ResumeRemap() => ApplyEnabledState();
+
     /// <summary>Imposta il VID/PID rilevato della tastiera e riavvia il monitoraggio.</summary>
     public void SetTargetDevice(int vendorId, int productId)
     {

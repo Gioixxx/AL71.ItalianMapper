@@ -16,8 +16,11 @@ public static class AppPaths
     public static string Settings => Path.Combine(Root, "Settings");
     public static string Logs => Path.Combine(Root, "Logs");
     public static string Backups => Path.Combine(Root, "Backups");
+    public static string Diagnostics => Path.Combine(Root, "Diagnostics");
 
     public static string SettingsFile => Path.Combine(Settings, "settings.json");
+    public static string DeviceFile => Path.Combine(Diagnostics, "device.json");
+    public static string KeyMapFile => Path.Combine(Diagnostics, "keymap-al71.json");
 
     /// <summary>Crea l'intera struttura di cartelle se mancante.</summary>
     public static void EnsureCreated()
@@ -26,6 +29,7 @@ public static class AppPaths
         Directory.CreateDirectory(Settings);
         Directory.CreateDirectory(Logs);
         Directory.CreateDirectory(Backups);
+        Directory.CreateDirectory(Diagnostics);
     }
 
     public static string ProfileFile(string name) =>
