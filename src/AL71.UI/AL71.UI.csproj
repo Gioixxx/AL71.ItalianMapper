@@ -6,8 +6,12 @@
     <RootNamespace>AL71.UI</RootNamespace>
     <UseWPF>true</UseWPF>
     <AssemblyName>AL71.LayoutManager</AssemblyName>
-    <ApplicationIcon></ApplicationIcon>
+    <ApplicationIcon>Resources\tray.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\tray.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />

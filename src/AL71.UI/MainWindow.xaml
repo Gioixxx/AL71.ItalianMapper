@@ -4,6 +4,7 @@
         xmlns:tb="clr-namespace:H.NotifyIcon;assembly=H.NotifyIcon.Wpf"
         xmlns:conv="clr-namespace:AL71.UI.Converters"
         Title="AL71 Italian Layout Manager" Height="640" Width="980"
+        Icon="/AL71.LayoutManager;component/Resources/tray.ico"
         WindowStartupLocation="CenterScreen"
         Closing="Window_Closing">
 
@@ -14,11 +15,9 @@
     <Grid>
         <!-- Tray icon (persiste anche a finestra nascosta) -->
         <tb:TaskbarIcon x:Name="Tray"
+                        IconSource="/AL71.LayoutManager;component/Resources/tray.ico"
                         ToolTipText="{Binding StatusSummary}"
                         TrayMouseDoubleClick="OnTrayOpen">
-            <tb:TaskbarIcon.GeneratedIcon>
-                <tb:GeneratedIconSource Text="IT" Foreground="White" Background="#2D7DD2" />
-            </tb:TaskbarIcon.GeneratedIcon>
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Apri" Click="OnTrayOpen" />
