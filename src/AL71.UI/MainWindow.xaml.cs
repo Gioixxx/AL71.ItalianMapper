@@ -177,6 +177,22 @@ public partial class MainWindow : Window
         }
     }
 
+    private void OnResetToItalian(object sender, RoutedEventArgs e)
+    {
+        if (Vm?.Controller.ActiveProfile is not { } active)
+            return;
+
+        if (MessageBox.Show(this,
+                $"Ripristinare le mappature di \"{active.Name}\" al layout italiano di base?\n" +
+                "Le personalizzazioni del profilo andranno perse.",
+                "Conferma ripristino",
+                MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+            return;
+
+        Vm.Controller.ResetActiveProfileToItalian();
+        AfterProfileChange();
+    }
+
     /// <summary>Riallinea l'elenco profili e le viste dipendenti dopo una modifica.</summary>
     private void AfterProfileChange()
     {

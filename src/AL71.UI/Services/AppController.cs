@@ -93,6 +93,31 @@ public sealed class AppController : IDisposable
         Log.Information("Profilo salvato: {Profile}", ActiveProfile.Name);
     }
 
+    /// <summary>Aggiorna la descrizione del profilo attivo e la persiste.</summary>
+    public void UpdateActiveProfileDescription(string? description)
+    {
+        if (ActiveProfile is null)
+            return;
+        ActiveProfile.Description = description ?? string.Empty;
+        _profileStore.Save(ActiveProfile);
+        Log.Information("Descrizione aggiornata per il profilo: {Profile}", ActiveProfile.Name);
+    }
+
+    /// <summary>Ripristina le mappature del profilo attivo al layout italiano di base (mantiene nome e descrizione).</summary>
+    public void ResetActiveProfileToItalian()
+    {
+        if (ActiveProfile is null)
+            return;
+
+        var italian = ItalianLayout.CreateDefault();
+        ActiveProfile.Mappings = italian.Mappings;
+        ActiveProfile.Macros = italian.Macros;
+        _profileStore.Save(ActiveProfile);
+        _engine.ActiveProfile = ActiveProfile;
+        Log.Information("Profilo '{Profile}' ripristinato al layout italiano.", ActiveProfile.Name);
+        RaiseStatusChanged();
+    }
+
     /// <summary>Salva un profilo (es. generato dalla mappa tasti) e opzionalmente lo attiva.</summary>
     public void ImportProfile(KeyboardProfile profile, bool activate)
     {

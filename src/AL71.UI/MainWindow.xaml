@@ -44,6 +44,7 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Layout:" Style="{StaticResource Label}" />
                             <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding ActiveProfile}" Margin="0,6,0,2" />
@@ -51,6 +52,8 @@
                             <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding DeviceStatus}" Margin="0,6,0,2" />
                             <TextBlock Grid.Row="2" Grid.Column="0" Text="Stato:" Style="{StaticResource Label}" />
                             <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding RemapStatus}" Margin="0,6,0,2" />
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Tasti mappati:" Style="{StaticResource Label}" />
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding MappedKeyCount}" Margin="0,6,0,2" />
                         </Grid>
                     </Border>
 
@@ -66,7 +69,16 @@
                         <Button Content="Elimina" Width="84" Margin="0,0,8,8" Click="OnDeleteProfile" />
                         <Button Content="Importa…" Width="84" Margin="0,0,8,8" Click="OnImportProfile" />
                         <Button Content="Esporta…" Width="84" Margin="0,0,8,8" Click="OnExportProfile" />
+                        <Button Content="Ripristina IT" Width="100" Margin="0,0,8,8" Click="OnResetToItalian"
+                                ToolTip="Riporta le mappature del profilo attivo al layout italiano di base" />
                     </WrapPanel>
+
+                    <TextBlock Text="Descrizione profilo" Style="{StaticResource Label}" Margin="0,8,0,2" />
+                    <TextBox Width="420" HorizontalAlignment="Left" Height="56"
+                             TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"
+                             Text="{Binding ActiveProfileDescription}" />
+                    <Button Content="Salva descrizione" Width="160" HorizontalAlignment="Left" Margin="0,6,0,0"
+                            Command="{Binding SaveDescriptionCommand}" />
 
                     <TextBlock Text="Mappatura" Style="{StaticResource Label}" Margin="0,16,0,2" />
                     <Button Width="260" HorizontalAlignment="Left" Padding="0,8"

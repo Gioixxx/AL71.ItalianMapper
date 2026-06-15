@@ -76,8 +76,12 @@ Dalla scheda **Dashboard** puoi gestire più profili (Italiano, Gaming, ...):
 - **Duplica** — copia il profilo attivo con un nuovo nome.
 - **Rinomina** / **Elimina** — gestione del profilo attivo (non puoi eliminare l'unico rimasto).
 - **Importa… / Esporta…** — scambia profili come file JSON (utile per backup o condivisione).
+- **Ripristina IT** — riporta le mappature del profilo attivo al layout italiano di base.
+- **Descrizione** — nota libera per profilo, modificabile e salvabile dalla Dashboard.
 
 I nomi duplicati vengono resi univoci automaticamente (suffisso `(2)`, `(3)`, ...).
+La Dashboard mostra anche il **conteggio dei tasti mappati**; nella scheda **Tastiera**
+i tasti rimappati sono evidenziati in ambra.
 
 ## Configurazione
 
