@@ -67,6 +67,126 @@ public partial class MainWindow : Window
         Vm.OnWizardClosed();
     }
 
+    private void OnNewProfile(object sender, RoutedEventArgs e)
+    {
+        if (Vm is null)
+            return;
+
+        var name = PromptDialog.Ask(this, "Nuovo profilo", "Nome del nuovo profilo:", "Nuovo profilo");
+        if (name is null)
+            return;
+
+        Vm.Controller.CreateProfile(name);
+        AfterProfileChange();
+    }
+
+    private void OnDuplicateProfile(object sender, RoutedEventArgs e)
+    {
+        if (Vm?.Controller.ActiveProfile is not { } active)
+            return;
+
+        var name = PromptDialog.Ask(this, "Duplica profilo", "Nome della copia:", $"{active.Name} (copia)");
+        if (name is null)
+            return;
+
+        Vm.Controller.DuplicateProfile(active.Name, name);
+        AfterProfileChange();
+    }
+
+    private void OnRenameProfile(object sender, RoutedEventArgs e)
+    {
+        if (Vm?.Controller.ActiveProfile is not { } active)
+            return;
+
+        var name = PromptDialog.Ask(this, "Rinomina profilo", "Nuovo nome:", active.Name);
+        if (name is null)
+            return;
+
+        Vm.Controller.RenameProfile(active.Name, name);
+        AfterProfileChange();
+    }
+
+    private void OnDeleteProfile(object sender, RoutedEventArgs e)
+    {
+        if (Vm?.Controller.ActiveProfile is not { } active)
+            return;
+
+        if (MessageBox.Show(this, $"Eliminare il profilo \"{active.Name}\"?", "Conferma",
+                MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+            return;
+
+        try
+        {
+            Vm.Controller.DeleteProfile(active.Name);
+            AfterProfileChange();
+        }
+        catch (InvalidOperationException ex)
+        {
+            MessageBox.Show(this, ex.Message, "Operazione non consentita",
+                MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+    }
+
+    private void OnImportProfile(object sender, RoutedEventArgs e)
+    {
+        if (Vm is null)
+            return;
+
+        var dialog = new Microsoft.Win32.OpenFileDialog
+        {
+            Title = "Importa profilo",
+            Filter = "Profilo JSON (*.json)|*.json|Tutti i file (*.*)|*.*"
+        };
+        if (dialog.ShowDialog(this) != true)
+            return;
+
+        try
+        {
+            Vm.Controller.ImportProfileFromFile(dialog.FileName);
+            AfterProfileChange();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, $"Impossibile importare il profilo:\n{ex.Message}", "Errore",
+                MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void OnExportProfile(object sender, RoutedEventArgs e)
+    {
+        if (Vm?.Controller.ActiveProfile is not { } active)
+            return;
+
+        var dialog = new Microsoft.Win32.SaveFileDialog
+        {
+            Title = "Esporta profilo",
+            Filter = "Profilo JSON (*.json)|*.json",
+            FileName = $"{active.Name}.json"
+        };
+        if (dialog.ShowDialog(this) != true)
+            return;
+
+        try
+        {
+            Vm.Controller.ExportActiveProfile(dialog.FileName);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, $"Impossibile esportare il profilo:\n{ex.Message}", "Errore",
+                MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    /// <summary>Riallinea l'elenco profili e le viste dipendenti dopo una modifica.</summary>
+    private void AfterProfileChange()
+    {
+        if (Vm is null)
+            return;
+        Vm.ReloadProfiles();
+        Vm.Dashboard.Refresh();
+        Vm.Editor.ReloadFromActiveProfile();
+    }
+
     private void OnCaptureFocus(object sender, MouseButtonEventArgs e) => KeyCaptureArea.Focus();
 
     private void OnCaptureKey(object sender, KeyEventArgs e)

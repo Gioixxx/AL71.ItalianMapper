@@ -102,6 +102,93 @@ public sealed class AppController : IDisposable
             SwitchProfile(profile.Name);
     }
 
+    /// <summary>Crea un nuovo profilo vuoto, lo salva e lo attiva.</summary>
+    public string CreateProfile(string name)
+    {
+        name = EnsureUniqueName(name);
+        var profile = new KeyboardProfile { Name = name };
+        _profileStore.Save(profile);
+        Log.Information("Profilo creato: {Profile}", name);
+        SwitchProfile(name);
+        return name;
+    }
+
+    /// <summary>Duplica un profilo esistente con un nuovo nome e attiva la copia.</summary>
+    public string DuplicateProfile(string sourceName, string newName)
+    {
+        var copy = _profileStore.Load(sourceName);
+        copy.Name = EnsureUniqueName(newName);
+        _profileStore.Save(copy);
+        Log.Information("Profilo duplicato: {Source} -> {Copy}", sourceName, copy.Name);
+        SwitchProfile(copy.Name);
+        return copy.Name;
+    }
+
+    /// <summary>Rinomina un profilo (crea il file col nuovo nome ed elimina il vecchio).</summary>
+    public string RenameProfile(string oldName, string newName)
+    {
+        newName = newName.Trim();
+        if (string.Equals(oldName, newName, StringComparison.Ordinal))
+            return oldName;
+
+        var profile = _profileStore.Load(oldName);
+        profile.Name = EnsureUniqueName(newName);
+        _profileStore.Save(profile);
+        _profileStore.Delete(oldName);
+        Log.Information("Profilo rinominato: {Old} -> {New}", oldName, profile.Name);
+        SwitchProfile(profile.Name);
+        return profile.Name;
+    }
+
+    /// <summary>Elimina un profilo. Rifiuta se è l'unico rimasto; se è quello attivo passa a un altro.</summary>
+    public void DeleteProfile(string name)
+    {
+        if (_profileStore.ListProfiles().Count <= 1)
+            throw new InvalidOperationException("Non puoi eliminare l'unico profilo rimasto.");
+
+        _profileStore.Delete(name);
+        Log.Information("Profilo eliminato: {Profile}", name);
+
+        if (string.Equals(ActiveProfile?.Name, name, StringComparison.OrdinalIgnoreCase))
+            SwitchProfile(_profileStore.ListProfiles().First());
+    }
+
+    /// <summary>Esporta il profilo attivo in un file JSON arbitrario.</summary>
+    public void ExportActiveProfile(string filePath)
+    {
+        if (ActiveProfile is null)
+            return;
+        _profileStore.Export(ActiveProfile, filePath);
+        Log.Information("Profilo esportato: {Profile} -> {Path}", ActiveProfile.Name, filePath);
+    }
+
+    /// <summary>Importa un profilo da un file JSON, evitando di sovrascrivere quelli esistenti, e lo attiva.</summary>
+    public string ImportProfileFromFile(string filePath)
+    {
+        var profile = _profileStore.Import(filePath);
+        profile.Name = EnsureUniqueName(profile.Name);
+        _profileStore.Save(profile);
+        Log.Information("Profilo importato da file: {Path} -> {Profile}", filePath, profile.Name);
+        SwitchProfile(profile.Name);
+        return profile.Name;
+    }
+
+    /// <summary>Rende il nome univoco aggiungendo un suffisso numerico se già usato.</summary>
+    private string EnsureUniqueName(string name)
+    {
+        name = string.IsNullOrWhiteSpace(name) ? "Nuovo profilo" : name.Trim();
+        var existing = _profileStore.ListProfiles();
+        if (!existing.Any(n => string.Equals(n, name, StringComparison.OrdinalIgnoreCase)))
+            return name;
+
+        for (var i = 2; ; i++)
+        {
+            var candidate = $"{name} ({i})";
+            if (!existing.Any(n => string.Equals(n, candidate, StringComparison.OrdinalIgnoreCase)))
+                return candidate;
+        }
+    }
+
     public bool RemapEnabled
     {
         get => Settings.RemapEnabled;

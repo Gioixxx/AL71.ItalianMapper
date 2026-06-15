@@ -59,6 +59,15 @@
                               ItemsSource="{Binding DataContext.Profiles, RelativeSource={RelativeSource AncestorType=Window}}"
                               SelectedItem="{Binding DataContext.SelectedProfile, RelativeSource={RelativeSource AncestorType=Window}}" />
 
+                    <WrapPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <Button Content="Nuovo" Width="84" Margin="0,0,8,8" Click="OnNewProfile" />
+                        <Button Content="Duplica" Width="84" Margin="0,0,8,8" Click="OnDuplicateProfile" />
+                        <Button Content="Rinomina" Width="84" Margin="0,0,8,8" Click="OnRenameProfile" />
+                        <Button Content="Elimina" Width="84" Margin="0,0,8,8" Click="OnDeleteProfile" />
+                        <Button Content="Importa…" Width="84" Margin="0,0,8,8" Click="OnImportProfile" />
+                        <Button Content="Esporta…" Width="84" Margin="0,0,8,8" Click="OnExportProfile" />
+                    </WrapPanel>
+
                     <TextBlock Text="Mappatura" Style="{StaticResource Label}" Margin="0,16,0,2" />
                     <Button Width="260" HorizontalAlignment="Left" Padding="0,8"
                             Content="Attiva / Disattiva mappatura"

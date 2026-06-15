@@ -68,6 +68,17 @@ Al primo avvio (o da **Diagnostica → Avvia procedura guidata AL71**) parte una
 Usa `keymap-al71.json` per completare/affinare
 `src/AL71.Layouts/Resources/italian.json` (mappa dei 71 tasti).
 
+## Gestione profili
+
+Dalla scheda **Dashboard** puoi gestire più profili (Italiano, Gaming, ...):
+
+- **Nuovo** — crea un profilo vuoto e lo attiva.
+- **Duplica** — copia il profilo attivo con un nuovo nome.
+- **Rinomina** / **Elimina** — gestione del profilo attivo (non puoi eliminare l'unico rimasto).
+- **Importa… / Esporta…** — scambia profili come file JSON (utile per backup o condivisione).
+
+I nomi duplicati vengono resi univoci automaticamente (suffisso `(2)`, `(3)`, ...).
+
 ## Configurazione
 
 Dati utente in `%AppData%\AL71LayoutManager\`:

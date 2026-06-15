@@ -66,6 +66,19 @@ public partial class EditorViewModel : ObservableObject
         _controller.SaveActiveProfile();
     }
 
+    /// <summary>Rilegge i valori del tasto selezionato dal profilo attivo (dopo cambio profilo).</summary>
+    public void ReloadFromActiveProfile()
+    {
+        if (!HasSelection)
+            return;
+
+        var mapping = FindMapping(SelectedPhysicalKey);
+        Normal = mapping?.Normal;
+        Shift = mapping?.Shift;
+        AltGr = mapping?.AltGr;
+        ShiftAltGr = mapping?.ShiftAltGr;
+    }
+
     [RelayCommand]
     private void Clear()
     {
