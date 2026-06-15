@@ -12,7 +12,7 @@ namespace AL71.Hook;
 /// </summary>
 public sealed class RemapEngine : IRemapEngine
 {
-    private readonly KeyInjector _injector;
+    private readonly IKeyInjector _injector;
 
     // Cache di lookup: tasto fisico -> mappatura. Sostituita atomicamente al cambio profilo.
     private volatile IReadOnlyDictionary<string, KeyMapping> _lookup =
@@ -26,7 +26,7 @@ public sealed class RemapEngine : IRemapEngine
     // Tasti fisici per cui abbiamo soppresso il key-down: ne sopprimiamo anche il key-up.
     private readonly HashSet<string> _suppressed = new();
 
-    public RemapEngine(KeyInjector injector) => _injector = injector;
+    public RemapEngine(IKeyInjector injector) => _injector = injector;
 
     public bool Enabled { get; set; } = true;
 

@@ -22,3 +22,6 @@ jobs:
 
       - name: Build (Release)
         run: dotnet build AL71.LayoutManager.sln -c Release --no-restore
+
+      - name: Test
+        run: dotnet test AL71.LayoutManager.sln -c Release --no-build --verbosity normal

@@ -33,6 +33,15 @@ dotnet build AL71.LayoutManager.sln -c Release
 dotnet run --project src/AL71.UI
 ```
 
+## Test
+
+La logica del motore di remap (selezione layer, AltGr, soppressione, scorciatoie) è
+coperta da test xUnit in `src/AL71.Tests`, eseguiti anche in CI:
+
+```pwsh
+dotnet test AL71.LayoutManager.sln -c Release
+```
+
 ## Architettura
 
 | Progetto            | Responsabilità |

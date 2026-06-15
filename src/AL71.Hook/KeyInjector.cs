@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using AL71.Core.Abstractions;
 using static AL71.Hook.NativeMethods;
 
 namespace AL71.Hook;
@@ -9,7 +10,7 @@ namespace AL71.Hook;
 /// il problema AltGr (=Ctrl+Alt) e i dead-key. Marca gli eventi con una firma in
 /// dwExtraInfo per riconoscerli ed evitare loop.
 /// </summary>
-public sealed class KeyInjector
+public sealed class KeyInjector : IKeyInjector
 {
     /// <summary>Digita una stringa (uno o più caratteri Unicode) tramite SendInput.</summary>
     public void SendText(string text)
