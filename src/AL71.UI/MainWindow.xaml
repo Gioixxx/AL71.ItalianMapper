@@ -102,7 +102,18 @@
                                                         Width="{Binding Width, Converter={StaticResource KeyWidth}}"
                                                         Height="40" Margin="2"
                                                         Command="{Binding DataContext.Editor.SelectKeyCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                        CommandParameter="{Binding}" />
+                                                        CommandParameter="{Binding}">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsMapped}" Value="True">
+                                                                    <Setter Property="Background" Value="#FFD54F" />
+                                                                    <Setter Property="FontWeight" Value="Bold" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
@@ -110,6 +121,14 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </Border>
+
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Bottom"
+                                HorizontalAlignment="Right" Margin="0,0,16,16">
+                        <Border Width="16" Height="16" Background="#FFD54F" CornerRadius="3"
+                                VerticalAlignment="Center" />
+                        <TextBlock Text="Tasto rimappato nel profilo attivo" Margin="6,0,0,0"
+                                   VerticalAlignment="Center" Foreground="#666" />
+                    </StackPanel>
 
                     <!-- Editor del tasto selezionato -->
                     <Border Grid.Row="1" Margin="0,12,0,0" BorderBrush="#DDD" BorderThickness="1"

@@ -23,7 +23,27 @@ public partial class EditorViewModel : ObservableObject
     [ObservableProperty] private string? _altGr;
     [ObservableProperty] private string? _shiftAltGr;
 
-    public EditorViewModel(AppController controller) => _controller = controller;
+    public EditorViewModel(AppController controller)
+    {
+        _controller = controller;
+        _controller.StatusChanged += (_, _) => UiThread.Run(() =>
+        {
+            RefreshMappedState();
+            ReloadFromActiveProfile();
+        });
+        RefreshMappedState();
+    }
+
+    /// <summary>Aggiorna l'evidenziazione dei tasti rimappati in base al profilo attivo.</summary>
+    public void RefreshMappedState()
+    {
+        var profile = _controller.ActiveProfile;
+        foreach (var row in Rows)
+            foreach (var cap in row.Keys)
+                cap.IsMapped = profile?.Mappings.Any(m =>
+                    string.Equals(m.PhysicalKey, cap.PhysicalKey, StringComparison.OrdinalIgnoreCase)
+                    && m.HasAnyMapping) == true;
+    }
 
     [RelayCommand]
     private void SelectKey(KeyCap? cap)
@@ -64,6 +84,7 @@ public partial class EditorViewModel : ObservableObject
             _controller.ActiveProfile.Mappings.Remove(mapping);
 
         _controller.SaveActiveProfile();
+        RefreshMappedState();
     }
 
     /// <summary>Rilegge i valori del tasto selezionato dal profilo attivo (dopo cambio profilo).</summary>
